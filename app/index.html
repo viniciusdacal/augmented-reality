@@ -17,39 +17,43 @@
     <!-- build:css styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
-    
   </head>
   <body>
-    <!--[if lt IE 10]>
-      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
-    
-    <div class="hero-unit">
-      <h1>'Allo, 'Allo!</h1>
-      <p>You now have</p>
-      <ul>
-        <li>HTML5 Boilerplate</li>
-        <li>Sass</li>
-        <li>jQuery</li>
-      </ul>
+    <h2>Three.js and JSARToolKit</h2>
+    <div class="container" id="video-container">
+        <div class="caption">&lt;video&gt;</div>
+        <video id="mainVideo" width="640" height="480" autoplay="autoplay" muted="true"></video>
     </div>
-    
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-    <script>
-      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-      e.src='https://www.google-analytics.com/analytics.js';
-      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-      ga('create','UA-XXXXX-X');ga('send','pageview');
-    </script>
+    <div class="container" id="image-container">
+        <div class="caption">&lt;image&gt;</div>
+        <img id="mainImage" width="640" height="480">
+    </div>
+    <div class="container" id="canvas-container">
+        <div class="caption">&lt;canvas&gt;</div>
+        <canvas id="mainCanvas" width="640" height="480"></canvas>
+    </div>
+    <div class="caption" style="margin: 2em auto;">
+        Threshold (0-255):
+        <input id="thresholdInput" type="range" min="0" max="255" style="vertical-align:middle;">
+    </div>
+    <div class="container" id="debugCanvas-container">
+        <div class="caption">debug &lt;canvas&gt;</div>
+        <canvas id="debugCanvas" width="640" height="480"></canvas>
+    </div>
+    <div class="container" id="threejs-container">
+        <div class="caption">three.js &lt;canvas&gt;</div>
+    </div>
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="/bower_components/jquery/dist/jquery.js"></script>
     <!-- endbower -->
+    <script type="text/javascript" src="/static_vendor/lib/three.min.js"></script>
+    <script type="text/javascript" src="/static_vendor/lib/Detector.js"></script>
+    <script type="text/javascript" src="/static_vendor/lib/stats.min.js"></script>
+    <script type="text/javascript" src="/static_vendor/lib/ar/jsartoolkit/JSARToolKit.min.js"></script>
     <!-- endbuild -->
-    
+
     <!-- build:js scripts/main.js -->
     <script src="scripts/main.js"></script>
     <!-- endbuild -->
