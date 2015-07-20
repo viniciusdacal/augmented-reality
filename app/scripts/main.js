@@ -76,13 +76,13 @@ $(document).ready(function () {
     var source;
     var sourceId = 0;
     if (sourceId === 0) {
-        video.src = '/app/assets/markers/jsartoolkit/output_4.ogg';
+        video.src = '/assets/markers/jsartoolkit/output_4.ogg';
         source = video;
     } else if (sourceId === 1) {
-        video.src = '/app/assets/markers/jsartoolkit/swap_loop.ogg';
+        video.src = '/assets/markers/jsartoolkit/swap_loop.ogg';
         source = video;
     } else if (sourceId === 2) {
-        img.src = '/app/assets/markers/jsartoolkit/chalk_multi.jpg';
+        img.src = '/assets/markers/jsartoolkit/chalk_multi.jpg';
         source = img;
     }
 
