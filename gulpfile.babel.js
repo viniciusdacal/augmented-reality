@@ -102,7 +102,8 @@ gulp.task('serve', ['styles', 'fonts'], () => {
       baseDir: ['.tmp', 'app'],
       routes: {
         '/bower_components': 'bower_components',
-        '/static_vendor': 'static_vendor'
+        '/static_vendor': 'static_vendor',
+        '/assets': 'assets'
       }
     }
   });
@@ -124,7 +125,10 @@ gulp.task('serve:dist', () => {
     notify: false,
     port: 9000,
     server: {
-      baseDir: ['dist']
+      baseDir: ['dist'],
+      routes: {
+        '/assets': 'assets',
+      }
     }
   });
 });
