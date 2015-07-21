@@ -217,29 +217,8 @@ $(document).ready(function () {
                     }
                 }
 
-                // If this is a new id, let's start tracking it.
-                if (typeof markers[currId] === 'undefined') {
-
-                    //create new object for the marker
-                    markers[currId] = {};
-
-                    //create a new Three.js object as marker root
-                    var markerRoot = new THREE.Object3D();
-                    markerRoot.matrixAutoUpdate = false;
-                    markerRoots[currId] = markerRoot;
-
-                    // Add the marker models and suchlike into your marker root object.
-                    var cube = new THREE.Mesh(
-                        new THREE.CubeGeometry(120, 120, 120),
-                        new THREE.MeshNormalMaterial({color: 0xff00ff, side: THREE.BackSide, wireframe: false})
-                    );
-                    cube.position.z = -60;
-                    markerRoot.add(cube);
-
-                    // Add the marker root to your scene.
-                    scene.add(markerRoot);
-                }
-
+                var markerRoot = objectGenerator(currId);
+                scene.add(markerRoot);
                 // Get the transformation matrix for the detected marker.
                 detector.getTransformMatrix(i, resultMat);
 
@@ -264,6 +243,48 @@ $(document).ready(function () {
             stats.update();
         }
         requestAnimationFrame(loop);
+    }
+
+    function objectGenerator(idObject) {
+        // If this is a new id, let's start tracking it.
+        if (typeof markers[idObject] === 'undefined') {
+
+            //create new object for the marker
+            markers[idObject] = {};
+
+            //create a new Three.js object as marker root
+            var markerRoot = new THREE.Object3D();
+            markerRoot.matrixAutoUpdate = false;
+            markerRoots[idObject] = markerRoot;
+
+            var obj = objectMarker[idObject]();
+            markerRoot.add(obj);
+            return markerRoot;
+        }
+    }
+
+    var objectMarker = {
+        22: function(){
+            return getCube();
+        },
+        63: function(){
+            return getCube();
+        },
+        64: function(){
+            return getCube();
+        },
+        81: function(){
+            return getCube();
+        }
+    }
+
+    function getCube () {
+        var cube = new THREE.Mesh(
+                new THREE.CubeGeometry(120, 120, 120),
+                new THREE.MeshNormalMaterial({color: 0xff00ff, side: THREE.BackSide, wireframe: false})
+            );
+        cube.position.z = -60;
+        return cube;
     }
     loop();
 });
