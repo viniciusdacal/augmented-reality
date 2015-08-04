@@ -10,8 +10,6 @@ function checkWebGl() {
     }
 }
 
-// I'm going to use a glMatrix-style matrix as an intermediary.
-// So the first step is to create a function to convert a glMatrix matrix into a Three.js Matrix4.
 THREE.Matrix4.prototype.setFromArray = function (m) {
     return this.set(
         m[0], m[4], m[8], m[12],
@@ -86,34 +84,11 @@ $(document).ready(function () {
         source = img;
     }
 
-    //===================================================
-    // INIT JSARTOOLKIT
-    //===================================================
-    // Most of the codes below are from http://www.html5rocks.com/en/tutorials/webgl/jsartoolkit_webrtc/
-    // Slight modifications are done to ensure that it works in this demo
-
-    // Create a RGB raster object for the 2D canvas.
-    // JSARToolKit uses raster objects to read image data.
-    // Note that you need to set canvas.changed = true on every frame.
     var raster = new NyARRgbRaster_Canvas2D(canvas);
-
-    // FLARParam is the thing used by FLARToolKit to set camera parameters.
-    // Here we create a FLARParam for images with canvasWidth*canvasHeight pixel dimensions.
-    // NOTE: THESE DIMENSIONS MUST BE THE SAME SIZE AS THE RASTER, OTHERWISE WILL GET AN "Uncaught Object" ERROR
     var param = new FLARParam(canvasWidth, canvasHeight);
-
-    // The FLARMultiIdMarkerDetector is the actual detection engine for marker detection.
-    // It detects multiple ID markers. ID markers are special markers that encode a number.
     var detector = new FLARMultiIdMarkerDetector(param, markerScale);
 
-    // For tracking video set continue mode to true. In continue mode, the detector
-    // tracks markers across multiple frames.
     detector.setContinueMode(true);
-
-    // Copy the camera perspective matrix from the FLARParam to the WebGL library camera matrix.
-    // The second and third parameters determine the zNear and zFar planes for the perspective matrix.
-    // var tmpGlMatCam = new Float32Array(16);
-    // param.copyCameraMatrix(tmpGlMatCam, 10, 10000);
 
     //===================================================
     // INIT THREE.JS
@@ -126,21 +101,13 @@ $(document).ready(function () {
     var $threejsContainerElem = $('#threejs-container');
     $threejsContainerElem.append(renderer.domElement);
 
-    // create the scene
     var scene = new THREE.Scene();
-
-    // Create a camera and a marker root object for your Three.js scene.
     var camera = new THREE.Camera();
-
-    // glMatrix matrices are flat arrays.
     var tmp = new Float32Array(16);
 
-    // Next we need to make the Three.js camera use the FLARParam matrix.
     param.copyCameraMatrix(tmp, 10, 10000);
     camera.projectionMatrix.setFromArray(tmp);
 
-    // Create scene and quad for the video.
-    // NOTE: must use <canvas> as the texture, not <video>, otherwise there will be a 1-frame lag
     var videoTex = new THREE.Texture(canvas);
     var geometry = new THREE.PlaneGeometry(2, 2);
     var material = new THREE.MeshBasicMaterial({
@@ -166,7 +133,6 @@ $(document).ready(function () {
     // LOOP
     //===================================================
 
-    // Create a NyARTransMatResult object for getting the marker translation matrices.
     var resultMat = new NyARTransMatResult();
 
     var markerRoots = {};
@@ -174,42 +140,25 @@ $(document).ready(function () {
 
     var ctx = canvas.getContext('2d');
 
-    // On every frame do the following:
     function loop() {
 
         if (source instanceof HTMLImageElement || (source instanceof HTMLVideoElement && source.readyState === source.HAVE_ENOUGH_DATA)) {
 
-            // Draw the video frame to the canvas.
             ctx.drawImage(source, 0, 0, canvasWidth, canvasHeight);
-
-            // Tell JSARToolKit that the canvas has changed.
             canvas.changed = true;
-
-            // Update the video texture.
             videoTex.needsUpdate = true;
 
-            // hide all markers first
             Object.keys(markerRoots).forEach(function (key) {
                 showChildren(markerRoots[key], false);
             });
 
-            // Do marker detection by using the detector object on the raster object.
-            // The threshold parameter determines the threshold value
-            // for turning the video frame into a 1-bit black-and-white image.
             var markerCount = detector.detectMarkerLite(raster, threshold);
 
-            // Go through the detected markers and get their IDs and transformation matrices.
             var i, j;
             for (i = 0; i < markerCount; i++) {
 
-                // Get the ID marker data for the current marker.
-                // ID markers are special kind of markers that encode a number.
-                // The bytes for the number are in the ID marker data.
                 var id = detector.getIdMarkerData(i);
-
-                // Read bytes from the id packet.
                 var currId = -1;
-                // This code handles only 32-bit numbers or shorter.
                 if (id.packetLength <= 4) {
                     currId = 0;
                     for (j = 0; j < id.packetLength; j++) {
@@ -219,17 +168,11 @@ $(document).ready(function () {
 
                 var markerRoot = objectGenerator(currId);
                 scene.add(markerRoot);
-                // Get the transformation matrix for the detected marker.
+
                 detector.getTransformMatrix(i, resultMat);
-
-                // Copy the marker matrix to the tmp matrix.
                 copyMarkerMatrix(resultMat, tmp);
-
-                // Copy the marker matrix over to your marker root object.
                 markerRoots[currId].matrix.setFromArray(tmp);
                 markerRoots[currId].matrixWorldNeedsUpdate = true;
-
-                // show the children of this marker
                 showChildren(markerRoots[currId], true);
             }
 
