@@ -90,12 +90,8 @@ $(document).ready(function () {
     // INIT THREE.JS
     //===================================================
 
-    var renderer = new THREE.WebGLRenderer({
-        antialias : true
-    });
-    renderer.setSize(canvasWidth, canvasHeight);
-
-    var $threejsContainerElem = $('#threejs-container'),
+    var renderer,
+        $threejsContainerElem = $('#threejs-container'),
         scene = new THREE.Scene(),
         camera = new THREE.Camera(),
         tmp = new Float32Array(16),
@@ -105,6 +101,10 @@ $(document).ready(function () {
         plane,
         videoScene,
         videoCam;
+    renderer = new THREE.WebGLRenderer({
+        antialias : true
+    });
+    renderer.setSize(canvasWidth, canvasHeight);
 
     $threejsContainerElem.append(renderer.domElement);
 
