@@ -94,26 +94,34 @@ $(document).ready(function () {
         antialias : true
     });
     renderer.setSize(canvasWidth, canvasHeight);
-    var $threejsContainerElem = $('#threejs-container');
+
+    var $threejsContainerElem = $('#threejs-container'),
+        scene = new THREE.Scene(),
+        camera = new THREE.Camera(),
+        tmp = new Float32Array(16),
+        videoTex,
+        geometry,
+        material,
+        plane,
+        videoScene,
+        videoCam;
+
     $threejsContainerElem.append(renderer.domElement);
 
-    var scene = new THREE.Scene(),
-        camera = new THREE.Camera(),
-        tmp = new Float32Array(16);
 
     param.copyCameraMatrix(tmp, 10, 10000);
     camera.projectionMatrix.setFromArray(tmp);
 
-    var videoTex = new THREE.Texture(canvas);
-    var geometry = new THREE.PlaneGeometry(2, 2);
-    var material = new THREE.MeshBasicMaterial({
+    videoTex = new THREE.Texture(canvas);
+    geometry = new THREE.PlaneGeometry(2, 2);
+    material = new THREE.MeshBasicMaterial({
         map : videoTex,
         depthTest : false,
         depthWrite : false
     });
-    var plane = new THREE.Mesh(geometry, material);
-    var videoScene = new THREE.Scene();
-    var videoCam = new THREE.Camera();
+    plane = new THREE.Mesh(geometry, material);
+    videoScene = new THREE.Scene();
+    videoCam = new THREE.Camera();
     videoScene.add(plane);
     videoScene.add(videoCam);
 
@@ -146,13 +154,14 @@ $(document).ready(function () {
                 showChildren(markerRoots[key], false);
             });
 
-            var markerCount = detector.detectMarkerLite(raster, threshold);
-
-            var i, j;
+            var markerCount = detector.detectMarkerLite(raster, threshold),
+                i,
+                j;
             for (i = 0; i < markerCount; i++) {
 
-                var id = detector.getIdMarkerData(i);
-                var currId = -1;
+                var id = detector.getIdMarkerData(i),
+                    currId = -1,
+                    markerRoot;
                 if (id.packetLength <= 4) {
                     currId = 0;
                     for (j = 0; j < id.packetLength; j++) {
@@ -160,7 +169,7 @@ $(document).ready(function () {
                     }
                 }
 
-                var markerRoot = objectGenerator(currId);
+                markerRoot = objectGenerator(currId);
                 scene.add(markerRoot);
 
                 detector.getTransformMatrix(i, resultMat);
@@ -188,13 +197,13 @@ $(document).ready(function () {
 
             //create new object for the marker
             markers[idObject] = {};
-
+            var markerRoot, obj;
             //create a new Three.js object as marker root
-            var markerRoot = new THREE.Object3D();
+            markerRoot = new THREE.Object3D();
             markerRoot.matrixAutoUpdate = false;
             markerRoots[idObject] = markerRoot;
 
-            var obj = objectMarker[idObject]();
+            obj = objectMarker[idObject]();
             markerRoot.add(obj);
             return markerRoot;
         }
