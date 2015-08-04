@@ -1,6 +1,6 @@
-var DEBUG = true;  //for JSARToolKit built-in debugging info
-var threshold = 128;
-var markerScale = 120;
+var DEBUG = true,  //for JSARToolKit built-in debugging info
+    threshold = 128,
+    markerScale = 120;
 
 function checkWebGl() {
     if (!Detector.webgl) {
@@ -39,8 +39,9 @@ function copyMarkerMatrix(arMat, glMat) {
 }
 
 function showChildren(object3d, visible) {
-    var children = object3d.children;
-    var i, len;
+    var children = object3d.children,
+        i,
+        len;
     for (i = 0, len = children.length; i < len; i++) {
         if (children[i] instanceof THREE.Mesh) {
             children[i].visible = visible;
@@ -60,19 +61,14 @@ $(document).ready(function () {
         console.log('threshold = ' + threshold);
     });
 
-    var canvas = $('#mainCanvas')[0];
-    var canvasWidth = canvas.width;
-    var canvasHeight = canvas.height;
+    var canvas = $('#mainCanvas')[0],
+        canvasWidth = canvas.width,
+        canvasHeight = canvas.height,
+        video = $('#mainVideo')[0],
+        img = $('#mainImage')[0],
+        source,
+        sourceId = 0;
 
-    //===================================================
-    // PREPARE VIDEO
-    //===================================================
-
-    //stream to video element
-    var video = $('#mainVideo')[0];
-    var img = $('#mainImage')[0];
-    var source;
-    var sourceId = 0;
     if (sourceId === 0) {
         video.src = '/assets/markers/jsartoolkit/output_4.ogg';
         source = video;
@@ -84,9 +80,9 @@ $(document).ready(function () {
         source = img;
     }
 
-    var raster = new NyARRgbRaster_Canvas2D(canvas);
-    var param = new FLARParam(canvasWidth, canvasHeight);
-    var detector = new FLARMultiIdMarkerDetector(param, markerScale);
+    var raster = new NyARRgbRaster_Canvas2D(canvas),
+        param = new FLARParam(canvasWidth, canvasHeight),
+        detector = new FLARMultiIdMarkerDetector(param, markerScale);
 
     detector.setContinueMode(true);
 
@@ -101,9 +97,9 @@ $(document).ready(function () {
     var $threejsContainerElem = $('#threejs-container');
     $threejsContainerElem.append(renderer.domElement);
 
-    var scene = new THREE.Scene();
-    var camera = new THREE.Camera();
-    var tmp = new Float32Array(16);
+    var scene = new THREE.Scene(),
+        camera = new THREE.Camera(),
+        tmp = new Float32Array(16);
 
     param.copyCameraMatrix(tmp, 10, 10000);
     camera.projectionMatrix.setFromArray(tmp);
@@ -133,12 +129,10 @@ $(document).ready(function () {
     // LOOP
     //===================================================
 
-    var resultMat = new NyARTransMatResult();
-
-    var markerRoots = {};
-    var markers = {};
-
-    var ctx = canvas.getContext('2d');
+    var resultMat = new NyARTransMatResult(),
+        markerRoots = {},
+        markers = {},
+        ctx = canvas.getContext('2d');
 
     function loop() {
 
@@ -221,7 +215,7 @@ $(document).ready(function () {
         }
     }
 
-    function getCube () {
+    function getCube() {
         var cube = new THREE.Mesh(
                 new THREE.CubeGeometry(120, 120, 120),
                 new THREE.MeshNormalMaterial({color: 0xff00ff, side: THREE.BackSide, wireframe: false})
